@@ -1,0 +1,26 @@
+.header {
+  height: 75px;
+  background-color: grey;
+  font-family: "Montserrat", arial, sans-serif !important;
+  font-size: 24px;
+}
+
+.masthead {
+  font-family: "Montserrat", arial, sans-serif !important;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.091em;
+  text-transform: uppercase;
+}
+
+/* .title {
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+} */
+
+.header-col {
+  height: 100%;
+}
