@@ -48,14 +48,17 @@ fieldset {
   width: calc((100% - 32px) / 3);
   padding: 0;
   margin: 0 16px 16px 0;
+  border: 1px solid black!important;
 }
 
 .third:last-of-type {
   margin-right: 0;
+  border: 1px solid black!important;
 }
 
 /* Define how SqPaymentForm iframes should look */
 .sq-input {
+  border: 1px solid black!important;
   height: 56px;
   box-sizing: border-box;
   border: 1px solid #E0E2E3;

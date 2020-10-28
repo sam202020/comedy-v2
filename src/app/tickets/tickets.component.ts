@@ -9,7 +9,6 @@ declare var SqPaymentForm: any;
   styleUrls: ['./tickets.component.css'],
 })
 export class TicketsComponent implements OnInit {
-  paymentForm: any;
   constructor() {}
 
   ngOnInit(): void {
@@ -65,6 +64,9 @@ export class TicketsComponent implements OnInit {
         },
       },
     });
+    if (!SqPaymentForm.isSupportedBrowser()) {
+      console.error("Browser not supported");
+    }
     paymentForm.build();
     // onGetCardNonce is triggered when the "Pay $1.00" button is clicked
     function onGetCardNonce(event) {
