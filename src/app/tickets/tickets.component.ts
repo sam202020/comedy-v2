@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { SquareService } from '../services/square.service';
 import { environment } from '../../environments/environment';
+import { v4 as uuidv4 } from 'uuid';
 
 declare var SqPaymentForm: any;
 
@@ -9,11 +11,13 @@ declare var SqPaymentForm: any;
   styleUrls: ['./tickets.component.css'],
 })
 export class TicketsComponent implements OnInit {
-  constructor() {}
+  paymentForm: any;
+  constructor(private squareService: SquareService) {}
 
   ngOnInit(): void {
-    const paymentForm = new SqPaymentForm({
+    this.paymentForm = new SqPaymentForm({
       applicationId: environment.SANDBOX_APP_ID,
+      locationId: environment.SANDBOX_LOCATION,
       inputClass: 'sq-input',
       autoBuild: false,
       inputStyles: [
@@ -41,15 +45,9 @@ export class TicketsComponent implements OnInit {
         elementId: 'sq-postal-code',
         placeholder: 'Postal',
       },
-      // SqPaymentForm callback functions
       callbacks: {
-        /*
-         * callback function: cardNonceResponseReceived
-         * Triggered when: SqPaymentForm completes a card nonce request
-         */
         cardNonceResponseReceived: function (errors, nonce, cardData) {
           if (errors) {
-            // Log errors from nonce generation to the browser developer console.
             console.error('Encountered errors:');
             errors.forEach(function (error) {
               console.error('  ' + error.message);
@@ -59,21 +57,39 @@ export class TicketsComponent implements OnInit {
             );
             return;
           }
-          alert(`The generated nonce is:\n${nonce}`);
-          //TODO: Replace alert with code in step 2.1
+          // alert(`The generated nonce is:\n${nonce}`);
+          const idempotency_key = uuidv4();
+          const body = JSON.stringify({
+            nonce: nonce,
+            idempotency_key: idempotency_key,
+            location_id: environment.SANDBOX_LOCATION,
+          });
+          this.processPayment();
         },
       },
     });
     if (!SqPaymentForm.isSupportedBrowser()) {
-      console.error("Browser not supported");
+      console.error('Browser not supported');
     }
-    paymentForm.build();
-    // onGetCardNonce is triggered when the "Pay $1.00" button is clicked
-    function onGetCardNonce(event) {
-      // Don't submit the form until SqPaymentForm returns with a nonce
-      event.preventDefault();
-      // Request a nonce from the SqPaymentForm object
-      paymentForm.requestCardNonce();
-    }
+    this.paymentForm.build();
+  }
+
+  // onGetCardNonce is triggered when the "Pay $1.00" button is clicked
+  onGetCardNonce(event) {
+    // Don't submit the form until SqPaymentForm returns with a nonce
+    event.preventDefault();
+    // Request a nonce from the SqPaymentForm object
+    this.paymentForm.requestCardNonce();
+  }
+
+  processPayment(body) {
+    this.squareService
+      .processPayment(body)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 }
