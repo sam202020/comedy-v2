@@ -1,9 +1,40 @@
 import { Component, OnInit } from '@angular/core';
-import { SquareService } from '../services/square.service';
 import { environment } from '../../environments/environment';
 import { v4 as uuidv4 } from 'uuid';
+import * as squareConnect from 'square-connect';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 
 declare var SqPaymentForm: any;
+
+function processPayment(paymentDetails): any {
+  console.log(paymentDetails);
+  // Charge the customer's card
+  const payments_api = new squareConnect.PaymentsApi();
+  const request_body = {
+    nonce: paymentDetails.nonce,
+    // location_id: paymentDetails.location_id,
+    // amount_money: {
+    //   amount: 100, // $1.00 charge
+    //   currency: 'USD',
+    // },
+    idempotency_key: paymentDetails.idempotency_key,
+    location_id: paymentDetails.location_id,
+  };
+  return fetch('http://localhost:3000/process-payment', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      nonce: paymentDetails.nonce,
+      idempotency_key: paymentDetails.idempotency_key,
+      location_id: paymentDetails.location_id,
+    }),
+  }).catch((err) => {
+    alert('Network error: ' + err);
+  });
+}
 
 @Component({
   selector: 'app-tickets',
@@ -12,7 +43,7 @@ declare var SqPaymentForm: any;
 })
 export class TicketsComponent implements OnInit {
   paymentForm: any;
-  constructor(private squareService: SquareService) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.paymentForm = new SqPaymentForm({
@@ -59,12 +90,12 @@ export class TicketsComponent implements OnInit {
           }
           // alert(`The generated nonce is:\n${nonce}`);
           const idempotency_key = uuidv4();
-          const body = JSON.stringify({
+          const body = {
             nonce: nonce,
             idempotency_key: idempotency_key,
             location_id: environment.SANDBOX_LOCATION,
-          });
-          this.processPayment();
+          };
+          processPayment(body).then((result) => console.log(result));
         },
       },
     });
@@ -80,16 +111,5 @@ export class TicketsComponent implements OnInit {
     event.preventDefault();
     // Request a nonce from the SqPaymentForm object
     this.paymentForm.requestCardNonce();
-  }
-
-  processPayment(body) {
-    this.squareService
-      .processPayment(body)
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }
 }
