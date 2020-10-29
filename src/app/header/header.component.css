@@ -14,13 +14,6 @@
   text-transform: uppercase;
 }
 
-/* .title {
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-} */
-
 .header-col {
   height: 100%;
 }
