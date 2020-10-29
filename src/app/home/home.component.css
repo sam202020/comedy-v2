@@ -2,3 +2,15 @@
     background-color: black;
     color: white;
 }
+
+.title {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.main {
+    font-size: 23px;
+    line-height: 1.25;
+    font-weight: 400;
+    color: rgb(145, 145, 145);
+}
