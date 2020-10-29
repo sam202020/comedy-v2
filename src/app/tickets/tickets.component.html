@@ -1,12 +1,14 @@
 <app-header></app-header>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-12 text-center mt-5"><h4>Get your tickets to the show!</h4></div>
+    <div class="col-sm-12 text-center mt-5">
+      <h4 class="header">Get your tickets to the show!</h4>
+    </div>
   </div>
   <div class="row">
     <div class="col-sm-12 text-center mt-5">
       <div id="form-container">
-        <mat-form-field appearance="fill" id="email" class="third">
+        <mat-form-field appearance="fill" id="email" class="third ml-2">
           <mat-label>How many tickets?</mat-label>
           <mat-select (selectionChange)="setTicketAmount($event)">
             <mat-option *ngFor="let number of numbers" [value]="number">
@@ -15,7 +17,12 @@
           </mat-select>
         </mat-form-field>
 
-        <input id="email" class="third" placeholder="Email Address" />
+        <input
+          id="email"
+          class="third ml-3"
+          placeholder="Email Address"
+          (change)="setEmail($event)"
+        />
         <div id="sq-card-number"></div>
         <div class="third" id="sq-expiration-date"></div>
         <div class="third" id="sq-cvv"></div>
@@ -25,7 +32,7 @@
           class="button-credit-card"
           (click)="onGetCardNonce($event)"
         >
-          Pay $15.00
+          Pay ${{ ticketAmount * 15.00 }}
         </button>
       </div>
     </div>

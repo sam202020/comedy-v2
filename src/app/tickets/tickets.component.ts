@@ -16,6 +16,7 @@ function processPayment(paymentDetails): any {
       nonce: paymentDetails.nonce,
       idempotency_key: paymentDetails.idempotency_key,
       location_id: paymentDetails.location_id,
+      amount: paymentDetails.amount,
     }),
   }).catch((err) => {
     alert('Network error: ' + err);
@@ -31,6 +32,7 @@ export class TicketsComponent implements OnInit {
   numbers: any = [];
   paymentForm: any;
   ticketAmount: number = 1;
+  email: string = '';
   constructor() {
     for (let i = 0; i < 10; i++) {
       this.numbers[i] = i + 1;
@@ -80,16 +82,27 @@ export class TicketsComponent implements OnInit {
             );
             return;
           }
-          // alert(`The generated nonce is:\n${nonce}`);
           const idempotency_key = uuidv4();
           let ticketAmount = this.getTicketAmount();
+          let email = this.getEmail();
           const body = {
             nonce: nonce,
             idempotency_key: idempotency_key,
             location_id: environment.SANDBOX_LOCATION,
-            amount: ticketAmount
+            amount: ticketAmount,
+            email: email
           };
-          processPayment(body).then((result) => console.log(result));
+          processPayment(body)
+            .then((result) =>
+              alert(
+                `Thank you for your purchase. Your ticket(s) will be emailed to \n${this.getEmail()}.`
+              )
+            )
+            .catch((error) => {
+              alert(
+                `Sorry, we were unable to process your purchase. Please try again later.`
+              );
+            });
         },
       },
     });
@@ -114,5 +127,13 @@ export class TicketsComponent implements OnInit {
 
   getTicketAmount() {
     return this.ticketAmount;
+  }
+
+  setEmail(event) {
+    this.email = event.target.value;
+  }
+
+  getEmail() {
+    return this.email;
   }
 }

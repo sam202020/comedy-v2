@@ -99,4 +99,9 @@ fieldset {
 #email {
   border: none;
   min-width: 100%;
+  min-height: 100%;
+}
+
+.header {
+  font-size: large !important;
 }
