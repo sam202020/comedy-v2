@@ -95,3 +95,8 @@ fieldset {
 .button-credit-card:hover {
   background-color: #4281CB;
 }
+
+#email {
+  border: none;
+  min-width: 100%;
+}

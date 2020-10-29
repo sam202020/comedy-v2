@@ -1,13 +1,21 @@
 <app-header></app-header>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-12 text-center mt-5">
-      <input id="name" placeholder="name" />
-    </div>
+    <div class="col-sm-12 text-center mt-5"><h4>Get your tickets to the show!</h4></div>
   </div>
   <div class="row">
     <div class="col-sm-12 text-center mt-5">
       <div id="form-container">
+        <mat-form-field appearance="fill" id="email" class="third">
+          <mat-label>How many tickets?</mat-label>
+          <mat-select (selectionChange)="setTicketAmount($event)">
+            <mat-option *ngFor="let number of numbers" [value]="number">
+              {{ number }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <input id="email" class="third" placeholder="Email Address" />
         <div id="sq-card-number"></div>
         <div class="third" id="sq-expiration-date"></div>
         <div class="third" id="sq-cvv"></div>

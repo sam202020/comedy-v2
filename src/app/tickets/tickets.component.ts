@@ -1,29 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { v4 as uuidv4 } from 'uuid';
-import * as squareConnect from 'square-connect';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { MatSelectChange } from '@angular/material/select';
 
 declare var SqPaymentForm: any;
 
 function processPayment(paymentDetails): any {
-  console.log(paymentDetails);
-  // Charge the customer's card
-  const payments_api = new squareConnect.PaymentsApi();
-  const request_body = {
-    nonce: paymentDetails.nonce,
-    // location_id: paymentDetails.location_id,
-    // amount_money: {
-    //   amount: 100, // $1.00 charge
-    //   currency: 'USD',
-    // },
-    idempotency_key: paymentDetails.idempotency_key,
-    location_id: paymentDetails.location_id,
-  };
-  return fetch('http://localhost:3000/process-payment', {
+  return fetch('https://pacific-earth-80477.herokuapp.com/process-payment', {
     method: 'POST',
     headers: {
-      'Accept': 'application/json, text/plain, */*',
+      Accept: 'application/json, text/plain, */*',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -42,8 +28,14 @@ function processPayment(paymentDetails): any {
   styleUrls: ['./tickets.component.css'],
 })
 export class TicketsComponent implements OnInit {
+  numbers: any = [];
   paymentForm: any;
-  constructor() {}
+  ticketAmount: number = 1;
+  constructor() {
+    for (let i = 0; i < 10; i++) {
+      this.numbers[i] = i + 1;
+    }
+  }
 
   ngOnInit(): void {
     this.paymentForm = new SqPaymentForm({
@@ -77,7 +69,7 @@ export class TicketsComponent implements OnInit {
         placeholder: 'Postal',
       },
       callbacks: {
-        cardNonceResponseReceived: function (errors, nonce, cardData) {
+        cardNonceResponseReceived: (errors, nonce, cardData) => {
           if (errors) {
             console.error('Encountered errors:');
             errors.forEach(function (error) {
@@ -90,10 +82,12 @@ export class TicketsComponent implements OnInit {
           }
           // alert(`The generated nonce is:\n${nonce}`);
           const idempotency_key = uuidv4();
+          let ticketAmount = this.getTicketAmount();
           const body = {
             nonce: nonce,
             idempotency_key: idempotency_key,
             location_id: environment.SANDBOX_LOCATION,
+            amount: ticketAmount
           };
           processPayment(body).then((result) => console.log(result));
         },
@@ -105,11 +99,20 @@ export class TicketsComponent implements OnInit {
     this.paymentForm.build();
   }
 
-  // onGetCardNonce is triggered when the "Pay $1.00" button is clicked
   onGetCardNonce(event) {
-    // Don't submit the form until SqPaymentForm returns with a nonce
     event.preventDefault();
-    // Request a nonce from the SqPaymentForm object
     this.paymentForm.requestCardNonce();
+  }
+
+  setTicketAmount(event: MatSelectChange) {
+    const selectedData = {
+      value: event.value,
+      text: event.source.triggerValue,
+    };
+    this.ticketAmount = selectedData.value;
+  }
+
+  getTicketAmount() {
+    return this.ticketAmount;
   }
 }
