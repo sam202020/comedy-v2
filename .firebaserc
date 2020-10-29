@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "comedy-v2": {
+      "hosting": {
+        "comedy-v2": [
+          "comedy-v2"
+        ]
+      }
+    }
+  }
+}

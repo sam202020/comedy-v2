@@ -118,8 +118,13 @@
               "devServerTarget": "comedy-v2:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
-    }},
+    }
+  },
   "defaultProject": "comedy-v2"
 }
