@@ -6,7 +6,7 @@ import { MatSelectChange } from '@angular/material/select';
 declare var SqPaymentForm: any;
 
 function processPayment(paymentDetails): any {
-  return fetch('https://pacific-earth-80477.herokuapp.com/process-payment', {
+  return fetch('http://localhost:3000/process-payment', {
     method: 'POST',
     headers: {
       Accept: 'application/json, text/plain, */*',
@@ -17,6 +17,7 @@ function processPayment(paymentDetails): any {
       idempotency_key: paymentDetails.idempotency_key,
       location_id: paymentDetails.location_id,
       amount: paymentDetails.amount,
+      email: paymentDetails.email,
     }),
   }).catch((err) => {
     alert('Network error: ' + err);
@@ -41,8 +42,8 @@ export class TicketsComponent implements OnInit {
 
   ngOnInit(): void {
     this.paymentForm = new SqPaymentForm({
-      applicationId: environment.SANDBOX_APP_ID,
-      locationId: environment.SANDBOX_LOCATION,
+      applicationId: environment.PRODUCTION_APP_ID,
+      locationId: environment.PRODUCTION_LOCATION,
       inputClass: 'sq-input',
       autoBuild: false,
       inputStyles: [
@@ -90,7 +91,7 @@ export class TicketsComponent implements OnInit {
             idempotency_key: idempotency_key,
             location_id: environment.SANDBOX_LOCATION,
             amount: ticketAmount,
-            email: email
+            email: email,
           };
           processPayment(body)
             .then((result) =>
