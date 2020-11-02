@@ -89,7 +89,7 @@ export class TicketsComponent implements OnInit {
           const body = {
             nonce: nonce,
             idempotency_key: idempotency_key,
-            location_id: environment.SANDBOX_LOCATION,
+            location_id: environment.PRODUCTION_LOCATION,
             amount: ticketAmount,
             email: email,
           };
