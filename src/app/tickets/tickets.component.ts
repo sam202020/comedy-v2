@@ -6,7 +6,7 @@ import { MatSelectChange } from '@angular/material/select';
 declare var SqPaymentForm: any;
 
 function processPayment(paymentDetails): any {
-  return fetch('http://localhost:3000/process-payment', {
+  return fetch('https://pacific-earth-80477.herokuapp.com/process-payment', {
     method: 'POST',
     headers: {
       Accept: 'application/json, text/plain, */*',
