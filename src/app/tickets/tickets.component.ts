@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { MatSelectChange } from '@angular/material/select';
+import { Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common'; 
 
 declare var SqPaymentForm: any;
 
@@ -30,11 +32,13 @@ function processPayment(paymentDetails): any {
   styleUrls: ['./tickets.component.css'],
 })
 export class TicketsComponent implements OnInit {
+  document: any;
   numbers: any = [];
   paymentForm: any;
   ticketAmount: number = 1;
   email: string = '';
-  constructor() {
+  constructor(@Inject(DOCUMENT) document) {
+    this.document = document;
     for (let i = 0; i < 10; i++) {
       this.numbers[i] = i + 1;
     }
@@ -113,7 +117,16 @@ export class TicketsComponent implements OnInit {
     this.paymentForm.build();
   }
 
+  setPayButtonDisableState(newState) {
+    var payButton = this.document.getElementById('sq-creditcard');
+    payButton.disabled = newState;
+    //Redraw the payment button
+    var buttonContent = payButton.innerHTML;
+    payButton.innerHTML = buttonContent;
+  }
+
   onGetCardNonce(event) {
+    this.setPayButtonDisableState(true);
     event.preventDefault();
     this.paymentForm.requestCardNonce();
   }
