@@ -1,40 +1,67 @@
 <app-header></app-header>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-sm-12 text-center mt-5">
-      <h4 class="header">Get your tickets to the show!</h4>
+<ng-template [ngIf]="!paid">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12 text-center mt-5">
+        <h4 class="header">Get your tickets to the show!</h4>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-12 text-center mt-5">
-      <div id="form-container">
-        <mat-form-field appearance="fill" id="email" class="third ml-2">
-          <mat-label>How many tickets?</mat-label>
-          <mat-select (selectionChange)="setTicketAmount($event)">
-            <mat-option *ngFor="let number of numbers" [value]="number">
-              {{ number }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+    <div class="row">
+      <div class="col-sm-12 text-center mt-5">
+        <div id="form-container">
+          <mat-form-field appearance="fill" id="email" class="third ml-2">
+            <mat-label>How many tickets?</mat-label>
+            <mat-select (selectionChange)="setTicketAmount($event)">
+              <mat-option *ngFor="let number of numbers" [value]="number">
+                {{ number }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <input
-          id="email"
-          class="third ml-2 sq-input"
-          placeholder=" Email Address"
-          (change)="setEmail($event)"
-        />
-        <div id="sq-card-number"></div>
-        <div class="third" id="sq-expiration-date"></div>
-        <div class="third" id="sq-cvv"></div>
-        <div class="third" id="sq-postal-code"></div>
-        <button
-          id="sq-creditcard"
-          class="button-credit-card"
-          (click)="onGetCardNonce($event)"
-        >
-          Pay ${{ ticketAmount * 15.00 }}
-        </button>
+          <input
+            id="email"
+            class="third ml-2 sq-input"
+            placeholder=" Email Address"
+            (change)="setEmail($event)"
+          />
+          <div id="sq-card-number"></div>
+          <div class="third" id="sq-expiration-date"></div>
+          <div class="third" id="sq-cvv"></div>
+          <div class="third" id="sq-postal-code"></div>
+          <button
+            id="sq-creditcard"
+            class="button-credit-card"
+            (click)="onGetCardNonce($event)"
+          >
+            Pay ${{ ticketAmount * 15.0 }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</ng-template>
+<ng-template [ngIf]="paid">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 text-center mt-5">
+        <h4 class="header">
+          Thank you for your support! Your tickets will be emailed to
+          {{ email }}, or you can print them below.
+        </h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 text-center mt-2">
+        <p>We look forward to seeing you at the show!</p>
+      </div>
+    </div>
+    <div
+      *ngFor="let item of [].constructor(ticketAmount); let i = index"
+      class="row"
+    >
+      <div class="col-sm-12 text-center mt-5">
+        <img class="img-fluid" src="/assets/images/ticket.JPG" alt="ticket" />
+      </div>
+    </div>
+  </div>
+</ng-template>

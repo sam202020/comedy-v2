@@ -4,6 +4,23 @@ import { v4 as uuidv4 } from 'uuid';
 import { MatSelectChange } from '@angular/material/select';
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'range',
+})
+export class RangePipe implements PipeTransform {
+  transform(length: number, offset: number = 0): number[] {
+    if (!length) {
+      return [];
+    }
+    const array = [];
+    for (let n = 0; n < length; ++n) {
+      array.push(offset + n);
+    }
+    return array;
+  }
+}
 
 declare var SqPaymentForm: any;
 
@@ -99,11 +116,9 @@ export class TicketsComponent implements OnInit {
             email: email,
           };
           processPayment(body)
-            .then((result) =>
-              alert(
-                `Thank you for your purchase. Your ticket(s) will be emailed to \n${this.getEmail()}.`
-              )
-            )
+            .then((result) => {
+              this.setPaid(true);
+            })
             .catch((error) => {
               alert(
                 `Sorry, we were unable to process your purchase. Please try again later.`
@@ -150,5 +165,13 @@ export class TicketsComponent implements OnInit {
 
   getEmail() {
     return this.email;
+  }
+
+  setPaid(paid: boolean) {
+    this.paid = paid;
+  }
+
+  getPaid() {
+    return this.paid;
   }
 }
