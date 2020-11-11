@@ -8,7 +8,8 @@ import { TicketsComponent } from './tickets/tickets.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSelectModule } from '@angular/material/select'
+import { MatSelectModule } from '@angular/material/select';
+import { SuccessComponent } from './success/success.component'
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select'
     TicketsComponent,
     HomeComponent,
     HeaderComponent,
+    SuccessComponent,
   ],
   imports: [
     BrowserModule,

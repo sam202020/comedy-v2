@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { MatSelectChange } from '@angular/material/select';
 import { Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common'; 
+import { DOCUMENT } from '@angular/common';
 
 declare var SqPaymentForm: any;
 
@@ -32,6 +32,7 @@ function processPayment(paymentDetails): any {
   styleUrls: ['./tickets.component.css'],
 })
 export class TicketsComponent implements OnInit {
+  paid: boolean = false;
   document: any;
   numbers: any = [];
   paymentForm: any;
@@ -83,7 +84,7 @@ export class TicketsComponent implements OnInit {
               console.error('  ' + error.message);
             });
             alert(
-              'Encountered errors, check browser developer console for more details'
+              'Please check your credit card details, it does not appear to be valid.'
             );
             return;
           }
