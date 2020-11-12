@@ -5,8 +5,9 @@ import { TicketsComponent } from './tickets/tickets.component';
 import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  { path: 'tickets', component: TicketsComponent },
+  { path: 'tickets/:date', component: TicketsComponent },
   { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: '**', component: HomeComponent },
 ];
 
 @NgModule({

@@ -5,6 +5,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 @Pipe({
   name: 'range',
@@ -37,6 +38,7 @@ function processPayment(paymentDetails): any {
       location_id: paymentDetails.location_id,
       amount: paymentDetails.amount,
       email: paymentDetails.email,
+      date: paymentDetails.date
     }),
   }).catch((err) => {
     alert('Network error: ' + err);
@@ -49,13 +51,14 @@ function processPayment(paymentDetails): any {
   styleUrls: ['./tickets.component.css'],
 })
 export class TicketsComponent implements OnInit {
+  date: any
   paid: boolean = false;
   document: any;
   numbers: any = [];
   paymentForm: any;
   ticketAmount: number = 1;
   email: string = '';
-  constructor(@Inject(DOCUMENT) document) {
+  constructor(@Inject(DOCUMENT) document, private route: ActivatedRoute) {
     this.document = document;
     for (let i = 0; i < 10; i++) {
       this.numbers[i] = i + 1;
@@ -63,6 +66,9 @@ export class TicketsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe((params) => {
+      this.date = params['date'];
+    });
     this.paymentForm = new SqPaymentForm({
       applicationId: environment.PRODUCTION_APP_ID,
       locationId: environment.PRODUCTION_LOCATION,
@@ -114,6 +120,7 @@ export class TicketsComponent implements OnInit {
             location_id: environment.PRODUCTION_LOCATION,
             amount: ticketAmount,
             email: email,
+            date: this.date
           };
           processPayment(body)
             .then((result) => {
