@@ -6,6 +6,7 @@ import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { isConstructorDeclaration } from 'typescript';
 
 @Pipe({
   name: 'range',
@@ -66,7 +67,7 @@ export class TicketsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
+    this.route.params.subscribe((params) => {
       this.date = params['date'];
     });
     this.paymentForm = new SqPaymentForm({
@@ -114,13 +115,14 @@ export class TicketsComponent implements OnInit {
           const idempotency_key = uuidv4();
           let ticketAmount = this.getTicketAmount();
           let email = this.getEmail();
+          let date = this.getDate();
           const body = {
             nonce: nonce,
             idempotency_key: idempotency_key,
             location_id: environment.PRODUCTION_LOCATION,
             amount: ticketAmount,
             email: email,
-            date: this.date
+            date: date
           };
           processPayment(body)
             .then((result) => {
@@ -180,5 +182,9 @@ export class TicketsComponent implements OnInit {
 
   getPaid() {
     return this.paid;
+  }
+
+  getDate() {
+    return this.date;
   }
 }
