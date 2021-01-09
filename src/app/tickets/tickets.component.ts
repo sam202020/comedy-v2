@@ -5,8 +5,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { isConstructorDeclaration } from 'typescript';
+import { ActivatedRoute } from '@angular/router';
 
 @Pipe({
   name: 'range',
@@ -39,7 +38,7 @@ function processPayment(paymentDetails): any {
       location_id: paymentDetails.location_id,
       amount: paymentDetails.amount,
       email: paymentDetails.email,
-      date: paymentDetails.date
+      date: paymentDetails.date,
     }),
   }).catch((err) => {
     alert('Network error: ' + err);
@@ -52,12 +51,14 @@ function processPayment(paymentDetails): any {
   styleUrls: ['./tickets.component.css'],
 })
 export class TicketsComponent implements OnInit {
-  date: any
+  date: any;
+  dates: any = [];
   paid: boolean = false;
   document: any;
   numbers: any = [];
   paymentForm: any;
   ticketAmount: number = 1;
+  selectedDate: any;
   email: string = '';
   constructor(@Inject(DOCUMENT) document, private route: ActivatedRoute) {
     this.document = document;
@@ -69,6 +70,14 @@ export class TicketsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.date = params['date'];
+      this.selectedDate = params['date'];
+      this.dates[0] = 'Friday ' + this.date;
+      let dateWithoutDash = this.date.replace(/-/g, '');
+      let dateNum = parseInt(dateWithoutDash, 10);
+      let nextDay = dateNum + 1;
+      let nextDayStr = nextDay.toString();
+      let nextDate = nextDayStr.substring(0, 1) + '-' + nextDayStr.substring(1);
+      this.dates[1] = 'Saturday ' + nextDate;
     });
     this.paymentForm = new SqPaymentForm({
       applicationId: environment.PRODUCTION_APP_ID,
@@ -122,7 +131,7 @@ export class TicketsComponent implements OnInit {
             location_id: environment.PRODUCTION_LOCATION,
             amount: ticketAmount,
             email: email,
-            date: date
+            date: date,
           };
           processPayment(body)
             .then((result) => {
@@ -164,6 +173,14 @@ export class TicketsComponent implements OnInit {
     this.ticketAmount = selectedData.value;
   }
 
+  setDate(event: MatSelectChange) {
+    const selectedData = {
+      value: event.value,
+      text: event.source.triggerValue,
+    };
+    this.selectedDate = selectedData.value;
+  }
+
   getTicketAmount() {
     return this.ticketAmount;
   }
@@ -185,6 +202,6 @@ export class TicketsComponent implements OnInit {
   }
 
   getDate() {
-    return this.date;
+    return this.selectedDate;
   }
 }
